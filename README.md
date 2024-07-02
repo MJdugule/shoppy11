@@ -10,7 +10,9 @@ The folders in Codebase are the resource folder which contains all reusable widg
 Clone this repo https://github.com/MJdugule/shoppy11
 
 open terminal and type:
+
 flutter pub get
+
 flutter run
 
 ## Link to APK
