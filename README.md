@@ -15,10 +15,6 @@ flutter pub get
 
 flutter run
 
-## Link to APK
-
-https://drive.google.com/file/d/1k28Gm89Wt8_WugXxjBSRqYIOjReBVwk6/view?usp=sharing
-
 ## Appetize Link
 
 https://appetize.io/app/2t5i4wf5mumkzw4rglnw5z3kh4?device=pixel7&osVersion=13.0
