@@ -7,7 +7,7 @@
 The folders in Codebase are the resource folder which contains all reusable widget, constants folder for the app theme(color), models for the model files,  view folder for the screens
 
 # How to run
-Clone this repo https://github.com/MJdugule/shoppy11
+Clone this repo https://github.com/MJdugule/shoppy11.git
 
 open terminal and type:
 
