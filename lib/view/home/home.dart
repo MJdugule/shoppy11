@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shoppy11/constants/constant.dart';
-import 'package:shoppy11/models/product_model.dart';
 import 'package:shoppy11/res/header.dart';
 import 'package:shoppy11/res/product_items.dart';
 import 'package:shoppy11/res/shop_items.dart';
+import 'package:shoppy11/viewmodels/product_viewmodel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -13,11 +14,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<SPProductModel> product = SPProductModel.productsList;
+
+  @override
+  void initState() {
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+      
+      final productProvider = Provider.of<ProductViewModel>(context, listen: false);
+      productProvider.getAllProduct();
+      
+     
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     // Size size = MediaQuery.of(context).size;
     // final shopProvider = Provider.of<ShopViewModel>(context, listen: true);
+    final productProvider =
+        Provider.of<ProductViewModel>(context, listen: true);
 
     return Scaffold(
         body: Padding(
@@ -28,7 +42,7 @@ class _HomePageState extends State<HomePage> {
               height: 56,
               child: Center(child: HeaderTextWidget(heading: "Shoppy"))),
           verticalSpaceTiny,
-          Expanded(
+         Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
               shrinkWrap: true,
@@ -36,21 +50,23 @@ class _HomePageState extends State<HomePage> {
                 verticalSpaceRegular,
                 const SPCarouselWidget(),
                 verticalSpaceRegular,
-                GridView.builder(
+               productProvider.loading
+                    ? const Center(child: CircularProgressIndicator())
+                    :  ListView.builder(
                     shrinkWrap: true,
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 80),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: product.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      mainAxisExtent: 244.5,
-                      //childAspectRatio: 0.60.h,
-                    ),
+                    itemCount: productProvider.productList.length,
+                    // gridDelegate:
+                    //     const SliverGridDelegateWithFixedCrossAxisCount(
+                    //   crossAxisCount: 2,
+                    //   mainAxisSpacing: 16,
+                    //   crossAxisSpacing: 16,
+                    //   mainAxisExtent: 244.5,
+                    //   //childAspectRatio: 0.60.h,
+                    // ),
                     itemBuilder: (context, index) {
-                      return SPProductCardOne(productModel: product[index]);
+                      return SPProductCardOne(productModel: productProvider.productList[index]);
                     }),
                 verticalSpaceMedium
               ],
@@ -59,52 +75,5 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     ));
-  }
-}
-
-class HomeSectionWidget extends StatelessWidget {
-  final VoidCallback onTap;
-  final String title;
-  const HomeSectionWidget({
-    super.key,
-    required this.onTap,
-    required this.title,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(fontSize: 17),
-              ),
-              InkWell(
-                  onTap: onTap,
-                  child: Text(
-                    "See all",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: kMainColorDark),
-                  ))
-            ],
-          ),
-          const Divider(
-            color: kMainColorDark,
-            thickness: 3,
-          )
-        ],
-      ),
-    );
   }
 }

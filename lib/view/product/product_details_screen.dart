@@ -60,14 +60,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             verticalSpaceRegular,
-            ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  widget.productModel.image,
-                  fit: BoxFit.contain,
-                  width: MediaQuery.of(context).size.width,
-                  height: 250,
-                )),
+            // ClipRRect(
+            //     borderRadius: BorderRadius.circular(10),
+            //     child: Image.asset(
+            //       widget.productModel.image,
+            //       fit: BoxFit.contain,
+            //       width: MediaQuery.of(context).size.width,
+            //       height: 250,
+            //     )),
             verticalSpaceMedium,
             Padding(
               padding: const EdgeInsets.symmetric(
@@ -77,7 +77,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.productModel.productName,
+                    widget.productModel.name,
                     maxLines: 2,
                     style: Theme.of(context)
                         .textTheme
@@ -89,24 +89,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "\$${widget.productModel.productPrice}",
+                        "\$${widget.productModel.buyingPrice}",
                         style: Theme.of(context)
                             .textTheme
                             .bodySmall!
                             .copyWith(fontSize: 17),
                       ),
-                      if (widget.productModel.productOldPrice != null) ...[
-                        horizontalSpaceSmall,
-                        Text(
-                          "\$${widget.productModel.productOldPrice}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall!
-                              .copyWith(
-                                  fontSize: 15,
-                                  decoration: TextDecoration.lineThrough),
-                        ),
-                      ]
+                      // if (widget.productModel.productOldPrice != null) ...[
+                      //   horizontalSpaceSmall,
+                      //   Text(
+                      //     "\$${widget.productModel.productOldPrice}",
+                      //     style: Theme.of(context)
+                      //         .textTheme
+                      //         .labelSmall!
+                      //         .copyWith(
+                      //             fontSize: 15,
+                      //             decoration: TextDecoration.lineThrough),
+                      //   ),
+                      // ]
                     ],
                   ),
                   Row(
@@ -114,7 +114,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     children: [
                       verticalSpaceSmall,
                       Text(
-                        "(${widget.productModel.productReview} Reviews)",
+                        "(${widget.productModel.featuredReviews} Reviews)",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium!
@@ -124,6 +124,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                   verticalSpaceMedium,
                   BPAddToCartButton(
+                    onAddTap: (){
+                      setState(() {
+                        
+                        // cartList.add(widget.productModel);
+                        // print(widget.productModel);
+                      });
+                      
+                    },
                     product: widget.productModel,
                   ),
                   verticalSpaceMedium,

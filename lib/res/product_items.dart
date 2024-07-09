@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shoppy11/constants/constant.dart';
+import 'package:shoppy11/data/api_urls.dart';
 
 import 'package:shoppy11/models/product_model.dart';
-import 'package:shoppy11/view/product/product_details_screen.dart';
 
 class SPProductCardOne extends StatelessWidget {
   const SPProductCardOne({super.key, required this.productModel});
@@ -10,58 +10,56 @@ class SPProductCardOne extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return SizedBox(
-      // height: 680,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) {
-                  return ProductDetailScreen(
-                    productModel: productModel,
-                  );
-                },
-              ));
-            },
-            child: SizedBox(
-                height: 160,
-                width: size.width,
-                child: Image.asset(productModel.image)),
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: kGrey),
+            borderRadius: BorderRadius.circular(20)
           ),
-          verticalSpaceTiny,
-          Text(
-            productModel.productName,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            style:
-                Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 14),
-          ),
-          verticalSpaceTiny,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                "N${productModel.productPrice}",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(fontSize: 14),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                    height: 130,
+                   width: 150,
+                    child: Image.network("${APIBase.developmentURL}/images/${productModel.photos[0].url}", fit: BoxFit.cover,)),
               ),
-              if (productModel.productOldPrice != null) ...[
-                horizontalSpaceSmall,
-                Text(
-                  "N${productModel.productOldPrice}",
-                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
-                      fontSize: 14, decoration: TextDecoration.lineThrough),
-                ),
-              ]
+              horizontalSpaceRegular,
+              verticalSpaceTiny,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  verticalSpaceTiny,
+                  Text(
+                    productModel.name,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: kBodyMediumTextStyle
+                  ),
+                  Text(
+                    "N${productModel.currentPrice[0].currencyPrice.entries.first.value[0]}",
+                    style: kBodyMediumTextStyle.copyWith(fontSize: 16)),
+                  
+                  if (productModel.sellingPrice != null) ...[
+                    horizontalSpaceSmall,
+                    Text(
+                      "N${productModel.sellingPrice}",
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                          fontSize: 14, decoration: TextDecoration.lineThrough),
+                    ),
+                  ]
+                ],
+              )
             ],
-          )
-        ],
-      ),
+          ),
+        ),
+        verticalSpaceRegular,
+      ],
     );
   }
 }
@@ -123,8 +121,9 @@ class _SPQuantityButtonState extends State<SPQuantityButton> {
 }
 
 class BPAddToCartButton extends StatefulWidget {
-  const BPAddToCartButton({super.key, required this.product});
+  const BPAddToCartButton({super.key, required this.product, required this.onAddTap});
   final SPProductModel product;
+  final VoidCallback onAddTap;
 
   @override
   State<BPAddToCartButton> createState() => _BPAddToCartButtonState();
@@ -134,14 +133,14 @@ class _BPAddToCartButtonState extends State<BPAddToCartButton> {
   int quantity = 1;
 
   checkCart(SPProductModel product) {
-    if (SPProductModel.cartList
-        .any((element) => element.productID == product.productID)) {
-      return true;
-    } else {
-      // print(product.productName);
+    // if (cartList
+    //     .any((element) => element.productID == product.productID)) {
+    //   return true;
+    // } else {
+    //   // print(product.productName);
 
-      return false;
-    }
+    //   return false;
+    // }
   }
 
   @override
@@ -191,17 +190,18 @@ class _BPAddToCartButtonState extends State<BPAddToCartButton> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(2),
                     child: TextButton(
-                        onPressed: () {
-                          // print("object");
-                          setState(() {
-                            widget.product.productQuantity = quantity;
-                            SPProductModel.cartList.add(widget.product);
-                            SPProductModel.cartList.clear();
-                            checkCart(widget.product);
-                          });
-                          print(SPProductModel.cartList.length);
-                          // productViewModel.addToCart(widget.product, quantity);
-                        },
+                        onPressed: widget.onAddTap,
+                        // () {
+                        //   // print("object");
+                        //   setState(() {
+                        //     widget.product.productQuantity = quantity;
+                        //     SPProductModel.cartList.add(widget.product);
+                        //     SPProductModel.cartList.clear();
+                        //     checkCart(widget.product);
+                        //   });
+                        //   print(SPProductModel.cartList.length);
+                        //   // productViewModel.addToCart(widget.product, quantity);
+                        // },
                         style: TextButton.styleFrom(
                           // padding: const EdgeInsets.symmetric(
                           //     vertical: kPaddingMM, horizontal: kPaddingMM),
@@ -279,7 +279,7 @@ class _SPCartProductState extends State<SPCartProduct> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(
-                widget.product.image,
+                widget.product.productImage[0],
                 height: 120,
                 fit: BoxFit.cover,
               ),
@@ -290,13 +290,13 @@ class _SPCartProductState extends State<SPCartProduct> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      widget.product.productName,
+                      widget.product.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Text(
-                      "N${widget.product.productPrice}",
+                      "N${widget.product.buyingPrice}",
                       maxLines: 1,
                       style: Theme.of(context)
                           .textTheme
@@ -333,23 +333,23 @@ class _SPCartProductState extends State<SPCartProduct> {
                 ),
               ),
               horizontalSpaceSmall,
-              SPQuantityButton(
-                  onRemoveTap: () {
-                    if (widget.product.productQuantity! > 1) {
-                      // productProvider.reduceQuantity(product);
-                      setState(() {
-                        widget.product.productQuantity =
-                            widget.product.productQuantity! - 1;
-                      });
-                    }
-                  },
-                  onAddTap: () {
-                    setState(() {
-                      widget.product.productQuantity =
-                          widget.product.productQuantity! + 1;
-                    });
-                  },
-                  quantity: widget.product.productQuantity!)
+              // SPQuantityButton(
+              //     onRemoveTap: () {
+              //       if (widget.product.productQuantity! > 1) {
+              //         // productProvider.reduceQuantity(product);
+              //         setState(() {
+              //           widget.product.productQuantity =
+              //               widget.product.productQuantity! - 1;
+              //         });
+              //       }
+              //     },
+              //     onAddTap: () {
+              //       setState(() {
+              //         widget.product.productQuantity =
+              //             widget.product.productQuantity! + 1;
+              //       });
+              //     },
+              //     quantity: widget.product.productQuantity!)
             ],
           )
         ],

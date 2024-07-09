@@ -81,7 +81,7 @@ class _DashboardState extends State<Dashboard> {
                 Icons.shopping_cart_checkout,
               ) 
           ),
-          label: "CART"),
+          label: "Check Out"),
     ];
 
     assert(itemsList.length == navBarList.length);

@@ -26,7 +26,7 @@ class _CheckOutSuccessState extends State<CheckOutSuccess> {
               size: 150,
             ),
             const Text(
-              "Successfull",
+              "Checkout Successfull",
               style: TextStyle(fontSize: 25),
             ),
             verticalSpaceLarge,
